@@ -83,9 +83,93 @@ print("Leitud .csv failid C:rida/Desktop/Andmed kasutas: ", failid3)
 #Ülesanne 3
 def loo_raporti_kataloog(nimi="Analüüsi_Raportid"):
     if not os.path.exists(nimi):
-        os.midir(nimi)
+        os.mkdir(nimi)
         return True
     return False
 #Ülesanne 4
 def leia_failid_algustahega(taht):
     return glob.glob(f"{taht}*.*")
+
+def taisanaluus(laiend):
+    failid = leia_projektifailid(laiend)
+    kogusuurus = 0
+
+    for f in failid:
+        if os.path.isfile(f):
+            kogusuurus += os.path.getsize(f)
+
+    print(f"\nAnalüüs laiendile {laiend}:")
+    print(f"Failide arv: {len(failid)}")
+    print(f"Kogusuurus: {kogusuurus} baiti")
+
+    return len(failid), kogusuurus
+
+#teine osa
+
+def puhasta_logid():
+    kaust = "Analüüsi_Raportid"
+    if not os.path.exists(kaust):
+        print("Raporteid ei leitud.")
+        return
+
+    puhasta = input("Kas kustutada kõik raportid? (j/e): ")
+    if puhasta.lower() == "j":
+        for f in os.listdir(kaust):
+            os.remove(os.path.join(kaust, f))
+        print("Raportid kustutatud.")
+    else:
+        print("Kustutamine katkestatud.")
+def main():
+    print("=== Failianalüsaator ===")
+    print("Leitud failitüübid:")
+    for f in os.listdir():
+        if os.path.isfile(f):
+            print(os.path.splitext(f)[1])
+
+    valik_stat = None
+
+    while True:
+        print("""
+1 - Täisanalüüs
+2 - Salvesta raport
+3 - Puhasta logid
+4 - Otsi faili algustähe järgi
+0 - Välju
+""")
+        valik = input("Valige tegevus, mida te tahate teha: ")
+
+        if valik == "1":
+            laiend = input("Sisesta faililaiend (nt .py): ")
+            valik_stat = taisanaluus(laiend)
+
+       # elif valik == "2":
+       #     if viimane_stat:
+       #         salvesta_raport(viimane_stat)
+       #     else:
+       #         print("Kõigepealt tee analüüs!")
+
+        elif valik == "3":
+            puhasta_logid()
+
+        elif valik == "4":
+            taht = input("Sisesta algustäht: ")
+            failid = leia_failid_algustahega(taht)
+            print("Leitud failid:")
+            for f in failid:
+                print(f)
+
+        elif valik == "0":
+            print("Programm lõpetatud.")
+            kustuda = input("kas te soovite lõpetada? (j/e): ")
+            if kustuda.lower() == "j":
+                print("Programm lõpetatud.")
+                break
+            else:
+                continue
+
+        else:
+            print("Palun valete valik!")
+
+
+if __name__ == "__main__":
+    main()
