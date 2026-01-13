@@ -52,123 +52,52 @@
 #print(f"{praeguse_kataloog}")
 
 
-
-import glob
 import os
-from datetime import datetime
+from Põhiprogramm import *
 
-f = open('rida.txt', 'r')
-print(dir(f))
-f.close()
-
-def leia_projektifailid(laiend, asukoht="."):
-    if not laiend.startswith("."):
-        laiend = "." + laiend
-    return glob.glob(f"*{laiend}")
-    asukoht = input("Sisesta kataloogi asukoht (tühjaks jätmisel kasutatakse praegust asukohta): ")
-    muster = os.path.join(asukoht, f"*{laiend}")
-    failid= glob.glob(muster)
-    return failid
-
-failid1 = leia_projektifailid(".py")
-
-failid2 = leia_projektifailid(".txt", "Analüüsi_Raportid")
-
-failid3 = leia_projektifailid(".csv", "C:rida/Desktop/Andmed")
-
-print("Leitud .py failid: ", failid1)
-print("Leitud .txt failid Analüüsi_Raportid kasutas: ", failid2)
-print("Leitud .csv failid C:rida/Desktop/Andmed kasutas: ", failid3)
-
-#Ülesanne 3
-def loo_raporti_kataloog(nimi="Analüüsi_Raportid"):
-    if not os.path.exists(nimi):
-        os.mkdir(nimi)
-        return True
-    return False
-#Ülesanne 4
-def leia_failid_algustahega(taht):
-    return glob.glob(f"{taht}*.*")
-
-def taisanaluus(laiend):
-    failid = leia_projektifailid(laiend)
-    kogusuurus = 0
-
-    for f in failid:
-        if os.path.isfile(f):
-            kogusuurus += os.path.getsize(f)
-
-    print(f"\nAnalüüs laiendile {laiend}:")
-    print(f"Failide arv: {len(failid)}")
-    print(f"Kogusuurus: {kogusuurus} baiti")
-
-    return len(failid), kogusuurus
-
-#teine osa
-
-def puhasta_logid():
-    kaust = "Analüüsi_Raportid"
-    if not os.path.exists(kaust):
-        print("Raporteid ei leitud.")
-        return
-
-    puhasta = input("Kas kustutada kõik raportid? (j/e): ")
-    if puhasta.lower() == "j":
-        for f in os.listdir(kaust):
-            os.remove(os.path.join(kaust, f))
-        print("Raportid kustutatud.")
-    else:
-        print("Kustutamine katkestatud.")
-def main():
-    print("=== Failianalüsaator ===")
-    print("Leitud failitüübid:")
-    for f in os.listdir():
-        if os.path.isfile(f):
-            print(os.path.splitext(f)[1])
-
-    valik_stat = None
-
-    while True:
-        print("""
+from Põhiprogramm import leia_projektifailid
+while True:
+    print("-"*20)
+    print("""
 1 - Täisanalüüs
 2 - Salvesta raport
 3 - Puhasta logid
 4 - Otsi faili algustähe järgi
 0 - Välju
 """)
-        valik = input("Valige tegevus, mida te tahate teha: ")
-
-        if valik == "1":
-            laiend = input("Sisesta faililaiend (nt .py): ")
-            valik_stat = taisanaluus(laiend)
+    print("-"*20)
+    valik = input("Valige tegevus, mida te tahate teha: ")
+    if valik == "1":
+        laiend = input("Sisesta faililaiend (nt .py): ")
+        valik_stat = taisanaluus(laiend)
 
        # elif valik == "2":
        #     if viimane_stat:
        #         salvesta_raport(viimane_stat)
        #     else:
        #         print("Kõigepealt tee analüüs!")
+    elif valik == "3":
+        puhasta_logid()
 
-        elif valik == "3":
-            puhasta_logid()
+    elif valik == "4":
+        taht = input("Sisesta algustäht: ")
+        failid = leia_failid_algustahega(taht)
+        print("Leitud failid:")
+        print("-"*20)
+        for f in failid:
+            print(f)
 
-        elif valik == "4":
-            taht = input("Sisesta algustäht: ")
-            failid = leia_failid_algustahega(taht)
-            print("Leitud failid:")
-            for f in failid:
-                print(f)
-
-        elif valik == "0":
+    elif valik == "0":
+        kustuda = input("kas te soovite lõpetada? (j/e): ")
+        if kustuda.lower() == "j":
+            print("-"*20)
             print("Programm lõpetatud.")
-            kustuda = input("kas te soovite lõpetada? (j/e): ")
-            if kustuda.lower() == "j":
-                print("Programm lõpetatud.")
-                break
-            else:
-                continue
-
+            break
         else:
-            print("Palun valete valik!")
+            continue
+
+    else:
+        print("Palun valige valik!")
 
 
 if __name__ == "__main__":
